@@ -1,0 +1,96 @@
+package CN;
+
+import java.util.Scanner;
+
+public class MyCRC {
+    int dividend_len ,divisor_len;
+    String divisor,dividend,input,result,error;
+
+    private String fun_xor(String temp_dividend, String temp_divisor) {
+        String result = "";
+        if(temp_dividend.charAt(0)=='0')
+        {
+            return temp_dividend.substring(1);
+        }
+        else{
+            for(int i = 0;i<divisor_len;i++)
+            {
+                result+=(temp_dividend.charAt(i)==temp_divisor.charAt(i)?'0':'1');
+
+            }
+            return result.substring(1);
+        }
+    }
+
+    public void modulo_fun()
+    {
+        String temp_dividend = dividend.substring(0,divisor_len);
+        String temp_divisor = divisor;
+        int j = divisor_len;
+        while(j<dividend_len)
+        {
+            temp_dividend = fun_xor(temp_dividend,temp_divisor);
+            temp_dividend = dividend + dividend.charAt(j);
+            j++;
+        }
+        result = dividend+fun_xor(temp_dividend,temp_divisor);
+
+    }
+
+
+    public  void getInfo()
+    {
+        Scanner scn = new Scanner(System.in);
+        System.out.println("Enter the data");
+       dividend = scn.nextLine();
+       input = dividend;
+        System.out.println("Enter the coefficient of poilunomial ");
+       divisor = scn.nextLine();
+        dividend_len = dividend.length();
+        divisor_len = divisor.length();
+        for(int i = 0;i<divisor_len-1;i++)
+        {
+            dividend+='0';
+        }
+        System.out.println("Dividend = "+dividend);
+        modulo_fun();
+        System.out.println("Input :"+input);
+        System.out.println("Dividend :"+dividend);
+        System.out.println("divisor :"+divisor);
+        System.out.println("data to send :"+result);
+
+    }
+    public static void main(String[] args)
+    {
+        MyCRC s = new MyCRC();
+        s.getInfo();
+        s.receiver();
+    }
+
+    public void receiver() {
+        Scanner scn = new Scanner(System.in);
+        System.out.println("Enter data received");
+        String received = scn.nextLine();
+        String temp_dividend = dividend.substring(0,divisor_len);
+        String temp_divisor = divisor;
+        int j = divisor_len;
+        while(j<dividend_len)
+        {
+            temp_dividend = fun_xor(temp_dividend,temp_divisor);
+            temp_dividend = dividend + dividend.charAt(j);
+            j++;
+        }
+        error =fun_xor(temp_dividend,temp_divisor);
+        System.out.println(error);
+        for(int i = 0;i<error.length();i++)
+        {
+            if(error.charAt(i)=='1')
+            {
+                System.out.println("There is a error ");
+                return;
+            }
+        }
+        System.out.println("no error");
+
+    }
+}
