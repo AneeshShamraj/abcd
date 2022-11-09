@@ -1,0 +1,130 @@
+package CN;
+import java.util.*;
+class SubNetting
+{
+    public static void main ( String args[] )
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the IP address : ");
+        String str = sc.nextLine();
+        StringBuilder net_ID = new StringBuilder();
+        StringBuilder duplicate = new StringBuilder();
+        StringBuilder duplicate2 = new StringBuilder(17);
+        StringBuilder p = new StringBuilder();
+        p.append(str.charAt(0));
+        p.append(str.charAt(1));
+        p.append(str.charAt(2));
+        System.out.println("IP : " + p);
+        int first_byte=Integer.parseInt(p.toString());
+        int i=0,count=0;
+        String d = ".";
+        char f = d.charAt(0);
+        do
+        {
+            net_ID.append(str.charAt(i));
+            duplicate.append(str.charAt(i));
+//System.out.print(net_ID);
+            if((char)str.charAt(i)== f)
+            {
+                count++;
+            }
+            i++;
+        }while(count!=3);
+        net_ID.append(0);
+        if(first_byte>0 && first_byte<128)
+        {
+            System.out.println("Class A");
+            System.out.print("Net ID : " + net_ID);
+            System.out.print("\nNo. of IP addresses possible : 16777216 i.e. 2^24");
+            System.out.println("\nNetwork Mask : 255.0.0.0");
+        }
+        else if(first_byte>127 && first_byte<192)
+        {
+            System.out.println("Class B");
+            System.out.print("Net ID : " + net_ID);
+            System.out.print("\nNo. of IP addresses possible : 65536 i.e. 2^16");
+            System.out.println("\nNetwork Mask : 255.255.0.0");
+            do
+            {
+                duplicate2.append(str.charAt(i));
+
+                if((char)str.charAt(i)== f)
+                {
+                    count++;
+                }
+                i++;
+            }while(count!=2);
+            int sn,h=0,b_sn=0,m_sn=0;
+            System.out.print("Enter the no. of subnets the network is to be divided into :- ");
+            sn = sc.nextInt();
+            h=(int)256/sn;
+            b_sn= (int)(Math.log(sn)/Math.log(2));
+            System.out.println("\nThe no. of bits in the subnet ID : "+ b_sn);
+            System.out.println("Total no. of IP addresses possible in each subnet : " +
+                    (int)65536/sn);
+            for(i=0;i<sn;i++)
+            {
+                System.out.println("\nSubnet " +i +":-");
+                StringBuilder s = new StringBuilder(duplicate2.toString());
+                s.append(h*i);
+                s.append(.0);
+                System.out.println("Subnet Address : "+ s);
+                StringBuilder t = new StringBuilder(duplicate2.toString());
+                t.append(h*(i+1)-1);
+                t.append(.255);
+                System.out.println("Broadcast Address : "+ t);
+                StringBuilder u = new StringBuilder(duplicate2.toString());
+                u.append(h*i+1);
+                u.append(.1);
+                System.out.print("Valid range of host IP address : "+ u +" - ");
+                StringBuilder v = new StringBuilder(duplicate2.toString());
+                v.append(h*(i+1)-1);
+                v.append(.254);
+                System.out.println(v);
+            }
+        }
+        else if(first_byte>191 && first_byte<224)
+        {
+            System.out.println("Class C");
+            System.out.print("Net ID : " + net_ID);
+            System.out.print("\nNo. of IP addresses possible : 256 i.e. 2^8");
+            System.out.println("\nNetwork Mask : 255.255.255.0");
+            int sn,h=0,b_sn=0,m_sn=0;
+            System.out.print("Enter the no. of subnets the network is to be divided into :- ");
+            sn = sc.nextInt();
+            h=(int)256/sn;
+            b_sn= (int)(Math.log(sn)/Math.log(2));
+            System.out.println("\nThe no. of bits in the subnet ID : "+ b_sn);
+            System.out.println("Total no. of IP addresses possible in each subnet : " + h);
+            for(i=0;i<sn;i++)
+            {
+                System.out.println("\nSubnet " +i +":-");
+                StringBuilder s = new StringBuilder(duplicate.toString());
+                System.out.println("Subnet Address : "+ s.append(h*i));
+                StringBuilder t = new StringBuilder(duplicate.toString());
+                System.out.println("Broadcast Address : "+ t.append(h*(i+1)-1));
+                StringBuilder u = new StringBuilder(duplicate.toString());
+                System.out.print("Valid range of host IP address : "+ u.append(h*i+1)+" - ");
+                StringBuilder v = new StringBuilder(duplicate.toString());
+                System.out.println(v.append(h*(i+1)-2));
+            }
+            for(i=7;i>7-b_sn;i--)
+            {
+                m_sn+=Math.pow(2,i);
+            }
+            System.out.println("\n\nSubnet Mask : 255.255.255."+m_sn);
+        }
+        else if(first_byte>223&&first_byte<240)
+        {
+            System.out.println("Class D , Ip address is not divided in network Id and host id");
+        }
+        else if(first_byte>239&&first_byte<256)
+        {
+            System.out.println("Class E , Ip address is not divided in network Id and host id");
+        }
+        else {
+            System.out.println("Invalid IP address");
+        }
+
+    }
+}
